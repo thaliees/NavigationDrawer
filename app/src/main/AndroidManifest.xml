@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.thaliees.navigationdrawer">
+
+    <!-- If your application depends on having a camera, uncomment:
+         Note. If your application uses, but does not require a camera in order to function, instead set android:required="false".
+         It's then your responsibility to check for the availability of the camera at runtime. -->
+    <!-- <uses-feature android:name="android.hardware.camera2" android:required="true" /> -->
+
+    <!-- If your application saves a full-size photo and shared with all apps, uncomment: -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+    <!-- If your application saves a full-size photo and remains private to your app only: -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- If your application saves photo, add and configure a provider.
+             Make sure that the authorities string matches the second argument to getUriForFile declared in MainActivity: dispatchTakePictureFullIntent().
+             In the meta-data section, the provider expects eligible paths to be configured in a dedicated resource file. -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.thaliees.navigationdrawer.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

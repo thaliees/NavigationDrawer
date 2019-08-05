@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- The path component corresponds to the path that is returned by getExternalFilesDir() when called with Environment.DIRECTORY_PICTURES -->
+    <external-path name="my_images" path="Android/data/com.thaliees.navigationdrawer/files/Pictures" /> <!-- For saves a full-size photo and remains private -->
+    <external-path name="my_images" path="." /> <!-- For saves a full-size photo and shared with all apps -->
+</paths>
