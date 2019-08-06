@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_IMAGE_CAPTURE_THUMBNAIL = 1;
     private static final int REQUEST_IMAGE_CAPTURE_FULL_SIZE = 2;
     private static final int REQUEST_PERMISSION_STORAGE = 3;
+    private static final int REQUEST_READ_IMAGE = 4;
     private static final String DatetimeFormat = "yyyyMMdd_HHmmss";
     private ImageView picture;
     private String currentPhotoPath;
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_gallery:
+                openGalleryIntent();
                 break;
 
             case R.id.nav_slideshow:
@@ -151,6 +155,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                the media scanner cannot access the files because they are private to your app. */
             //galleryAddPic(); // Uncomment this!
             setPic();
+        }
+        else if (requestCode == REQUEST_READ_IMAGE && resultCode == RESULT_OK){
+            if (data != null){
+                Uri uri = data.getData();
+                setPic(uri);
+            }
         }
     }
 
@@ -280,5 +290,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
         picture.setImageBitmap(bitmap);
+    }
+
+    private void openGalleryIntent(){
+        Intent contentIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        // Filter to only show results that can be "opened", such as a file (as opposed to a list of contacts or timezones)
+        contentIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        // Filter to show only images, using the image MIME data type.
+        contentIntent.setType("image/*");
+        startActivityForResult(contentIntent, REQUEST_READ_IMAGE);
+    }
+
+    private void setPic(Uri uri){
+        try {
+            ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            parcelFileDescriptor.close();
+
+            picture.setImageBitmap(image);
+        }
+        catch (IOException ex){ }
     }
 }

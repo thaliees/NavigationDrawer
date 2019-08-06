@@ -10,3 +10,6 @@ Use of the camera to take photos.
 * When the user selects the Camera option, from the side menu, the application can take a photo and display it in the application.
 * Shared storage implementation (accessible for other applications) or private (available only for the application).
 * The image can be small or actual size.
+
+##### Option: Gallery
+When the user selects the Gallery option, from the side menu, the application show the gallery for select a photo and display it in the application
