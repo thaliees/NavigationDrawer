@@ -20,5 +20,9 @@ Creation MapsActivity.
 * Configure AndroidManifest
 
 Use Google Location Services APIs, Fused location provider API for get the last know location.
-* Configure Google Play Services (build.gradle)
-* Configure Permissions (AndroidManifest)
+* Set up Google Play Services (build.gradle)
+* Specify Permissions (AndroidManifest)
+
+Location settings
+* Set up a location request
+* Get current location settings and prompt the user to change location setting (if the location settings are not satisfied.
