@@ -18,3 +18,7 @@ Use of the camera to take photos.
 Creation MapsActivity.
 * Configure build.gradle (Module: app)
 * Configure AndroidManifest
+
+Use Google Location Services APIs, Fused location provider API for get the last know location.
+* Configure Google Play Services (build.gradle)
+* Configure Permissions (AndroidManifest)
