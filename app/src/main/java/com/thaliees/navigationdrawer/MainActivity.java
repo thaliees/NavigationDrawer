@@ -122,7 +122,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 openGalleryIntent();
                 break;
 
-            case R.id.nav_slideshow:
+            case R.id.nav_location:
+                startActivity(new Intent(this, MapsActivity.class));
                 break;
 
             case R.id.nav_tools:

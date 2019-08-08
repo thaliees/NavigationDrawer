@@ -12,4 +12,9 @@ Use of the camera to take photos.
 * The image can be small or actual size.
 
 ##### Option: Gallery
-When the user selects the Gallery option, from the side menu, the application show the gallery for select a photo and display it in the application
+* When the user selects the Gallery option, from the side menu, the application show the gallery for select a photo and display it in the application.
+
+##### Option: Location
+Creation MapsActivity.
+* Configure build.gradle (Module: app)
+* Configure AndroidManifest
