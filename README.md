@@ -25,4 +25,7 @@ Use Google Location Services APIs, Fused location provider API for get the last 
 
 Location settings
 * Set up a location request
-* Get current location settings and prompt the user to change location setting (if the location settings are not satisfied.
+* Get current location settings and prompt the user to change location setting (if the location settings are not satisfied).
+
+Receive location updates
+* Location update callback

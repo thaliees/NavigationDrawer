@@ -1,20 +1,26 @@
 package com.thaliees.navigationdrawer;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +37,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final long lat = -34;
     private static final long lng = 151;
+    private LocationRequest locationRequest;
     private static final int REQUEST_CHECK_SETTINGS = 2;
+    private LocationCallback locationCallback;
+    private static final String REQUESTING_LOCATION_UPDATE_KEY = "Requesting";
+    private boolean requestingLocationUpdates = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +53,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Create an instance of the Fused Location Provider Client
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-    }
 
+        // Implement the LocationCallBack interface
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) return;
+
+                for (Location location: locationResult.getLocations()){
+                    Toast.makeText(getApplicationContext(), "Lat " + location.getLatitude() + "Lng " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                    setLocation(location);
+                }
+            }
+        };
+
+        updateValues(savedInstanceState);
+    }
 
     /**
      * Manipulates the map once available.
@@ -82,32 +106,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
+        if (!requestingLocationUpdates) startLocationUpdates();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        requestingLocationUpdates = false;
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(REQUESTING_LOCATION_UPDATE_KEY, requestingLocationUpdates);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == REQUEST_CHECK_SETTINGS && requestCode == RESULT_OK)
+            getLocation();
     }
 
-    private void settingsLocation(){
-        LocationRequest locationRequest = LocationRequest.create();
+    private void updateValues(Bundle savedInstanceState){
+        if (savedInstanceState == null) return;
+
+        if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATE_KEY))
+            requestingLocationUpdates = savedInstanceState.getBoolean(REQUESTING_LOCATION_UPDATE_KEY);
+        getLocation();
+    }
+
+    private void settingsLocation() {
+        locationRequest = LocationRequest.create();
         locationRequest.setInterval(10000);         // Milliseconds
         locationRequest.setFastestInterval(5000);   // Milliseconds
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
@@ -126,15 +158,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         task.addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                if (e instanceof ResolvableApiException){
+                if (e instanceof ResolvableApiException) {
                     try {
                         ResolvableApiException resolvableApiException = (ResolvableApiException) e;
                         resolvableApiException.startResolutionForResult(MapsActivity.this, REQUEST_CHECK_SETTINGS);
-                    }
-                    catch (IntentSender.SendIntentException sendEx){ }
+                    } catch (IntentSender.SendIntentException sendEx) { }
                 }
             }
         });
+    }
+
+    private void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
     private void getLocation() {
