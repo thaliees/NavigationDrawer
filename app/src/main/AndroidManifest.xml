@@ -3,15 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.thaliees.navigationdrawer">
 
-    <!-- If your application depends on having a camera, uncomment:
-         Note. If your application uses, but does not require a camera in order to function, instead set android:required="false".
-         It's then your responsibility to check for the availability of the camera at runtime. -->
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!--
+        If your application depends on having a camera, uncomment:
+        Note. If your application uses, but does not require a camera in order to function, instead set android:required="false".
+        It's then your responsibility to check for the availability of the camera at runtime.
+    -->
     <!-- <uses-feature android:name="android.hardware.camera2" android:required="true" /> -->
-
     <!-- If your application saves a full-size photo and shared with all apps, uncomment: -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <!-- If your application saves a full-size photo and remains private to your app only: -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
 
     <application
         android:allowBackup="true"
@@ -21,6 +31,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -31,10 +60,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- If your application saves photo, add and configure a provider.
-             Make sure that the authorities string matches the second argument to getUriForFile declared in MainActivity: dispatchTakePictureFullIntent().
-             In the meta-data section, the provider expects eligible paths to be configured in a dedicated resource file. -->
+        <!--
+            If your application saves photo, add and configure a provider.
+            Make sure that the authorities string matches the second argument to getUriForFile declared in MainActivity: dispatchTakePictureFullIntent().
+            In the meta-data section, the provider expects eligible paths to be configured in a dedicated resource file.
+        -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.thaliees.navigationdrawer.fileprovider"
@@ -44,6 +74,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <receiver
+            android:name=".GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".GeofenceTransitionsJobIntentService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
