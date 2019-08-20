@@ -1,6 +1,6 @@
 # Navigation Drawer
 
-[Project created with Android Studio V3.4.2] [Api >= 15]
+[Project created with Android Studio V3.4.2] [Api >= 16]
 
 ## Project Base.
 * Choose: Navigation Drawer Activity
@@ -29,3 +29,10 @@ Location settings
 
 Receive location updates
 * Location update callback
+
+Use Geofence
+* Creation BroadcastReceiver and JobIntentService
+* Specify Permission (AndroidManifest)
+* Set up Receiver and Service (AndroidManifest)
+* Set up GeofencingClient, create and add geofences (and remove geofences), specify geofences and initial triggers (GeofencingRequest.Builder)
+* Define a broadcast receiver for geofence transitions
