@@ -44,7 +44,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final int REQUEST_CHECK_SETTINGS = 1000;
     private static final int REQUEST_PERMISSION_CODE = 1001;
     private static final int GEOFENCE_RADIUS_IN_METERS = 100;
@@ -354,11 +354,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         fProviderClient.requestLocationUpdates(locRequest, locCallback, null);
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Toast.makeText(this, "Location changed", Toast.LENGTH_SHORT).show();
-        if (location != null) setTextLocation(location);
     }
 }

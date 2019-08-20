@@ -36,3 +36,4 @@ Use Geofence
 * Set up Receiver and Service (AndroidManifest)
 * Set up GeofencingClient, create and add geofences (and remove geofences), specify geofences and initial triggers (GeofencingRequest.Builder)
 * Define a broadcast receiver for geofence transitions
+Note. Delete the implement: LocationListener
